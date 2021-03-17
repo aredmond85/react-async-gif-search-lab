@@ -1,33 +1,28 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import GifList from '../components/GifList'
 import GifSearch from '../components/GifSearch'
 
-class GifListContainer extends Component {
+class GifListContainer extends Component{
 
-  state = {
-    gifs: []
-  }
+    state = {
+        gifs: []
+      }
 
-  render() {
-    return(
-      <div>
-        <GifSearch fetchGIFs={this.fetchGIFs} />
-        <GifList gifs={this.state.gifs} />
-      </div>
-    )
-  }
+    getAllGifs = (query) => {
+        fetch( `https://api.giphy.com/v1/gifs/search?q=${query}&api_key=eXjZ5IwuivO5Q1lFamivmMOCdHy56cOc`)
+        .then(res => res.json())
+        .then(({data}) => this.setState({gifs: data}))
+      }
+    
 
-  fetchGIFs = (query = "dolphins") => {
-    fetch(`https://api.giphy.com/v1/gifs/search?q=dolphin&api_key=eXjZ5IwuivO5Q1lFamivmMOCdHy56cOc&rating=g`)
-      .then(res => res.json())
-      .then(({data}) => {
-        this.setState({ gifs: data.map( gif => ({ url: gif.images.original.url }) ) })
-      })
-  }
-
-  componentDidMount() {
-    this.fetchGIFs()
-  }
+    render(){
+        return(
+            <div>
+                <GifSearch handleSubmit={this.getAllGifs} />
+                <GifList gifs={this.state.gifs}/>
+            </div>
+        )
+    }
 }
 
 export default GifListContainer
